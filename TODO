@@ -1,0 +1,16 @@
+☐ Use serverless for handling requests
+  ☐ Choose language
+  ☐ Create Containers
+☐ Use AWS SNS for Message Queue
+ ☐ Expand later Dead Queue Letter
+☐ Implement Post Requests
+  ☐ Post Message
+  ☐ Get Message By recipient 
+
+
+☐ Secure application
+  ☐ Maybe Cognito
+  ☐ Use jwt tokens?
+  ☐ TO THINK (GOOD LUCK.)
+
+
