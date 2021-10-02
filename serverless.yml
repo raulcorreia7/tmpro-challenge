@@ -1,0 +1,33 @@
+org: raulcorreia7
+app: tmpro-challenge
+service: raul-project
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  region: eu-central-1
+
+functions:
+  post-message:
+    handler: src/post-message.handler
+    environment:
+      topicARN:
+        Ref: SNSTopicMessageTopic
+    events:
+      - httpApi:
+          method: POST
+          path: /message
+  
+  get-message:
+    handler: src/get-message.handler
+    events:
+      - httpApi:
+          method: GET
+          path: /message
+  
+  save-message:
+    handler: src/save-message.handler
+    events:
+      - sns: MessageTopic
