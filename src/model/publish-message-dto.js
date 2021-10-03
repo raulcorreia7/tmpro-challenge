@@ -4,21 +4,28 @@ const utils = require('../lib/utils')
  * 
  * {
  *      "message" : "Lorep ipsum",
- *      "delivery" : "email" or "sms"
+ *      "delivery" : "email" or "sms",
+ *      "target" : "user@user.pt" or "123456789"
  * }
  */
 
-const parameters = ["message", "delivery"]
+const parameters = [
+    "message",
+    "delivery",
+    "target"
+]
 
 /**
  * DTO Constructor
  * @param {*} message message of DTO
  * @param {*} delivery Delivery type of DTO (email/sms)
+ * @param {*} target Target to deliver the topic to (Phone number or Email address)
  */
 
-exports.PublishMessageDTO = function PublishMessageDTO(message, delivery) {
+exports.PublishMessageDTO = function PublishMessageDTO(message, delivery, target) {
     this.message = message;
     this.delivery = delivery;
+    this.target = target
 };
 
 /**
@@ -41,8 +48,17 @@ exports.isValid = (event) => {
  * @returns Publish message DTO
  */
 exports.parse = (event) => {
-    const obj = new this.PublishMessageDTO(event.message, event.delivery);
+    const obj = new this.PublishMessageDTO(event.message, event.delivery, event.target);
     return obj;
+}
+/**
+ * Parse an DTO oobject from a given string
+ * @param {*} data string with data
+ * @returns Publish message DTO
+ */
+exports.parseFromString = (data) => {
+    const obj = JSON.parse(data)
+    return this.parse(obj)
 }
 /**
  * Stringify DTO

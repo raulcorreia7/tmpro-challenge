@@ -7,15 +7,25 @@ provider:
   name: aws
   runtime: nodejs14.x
   lambdaHashingVersion: 20201221
+  stage: ${opt:stage, 'dev'}
   region: eu-central-1
   environment:
     MESSAGE_TOPIC_NAME: ${self:custom.topicName}
     MESSAGE_TOPIC_ARN: ${self:custom.topicArn}
+    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
+    EMAIL_ARN : arn:aws:ses:eu-central-1:061659491951:identity/testing@raulcorreia.com
+    FROM_NAME : "Raúl Correia"
+    FROM_EMAIL : "testing@raulcorreia.com"
   iamRoleStatements:
     - Effect: "Allow"
       Action:
         - "sns:Publish"
-      Resource: ${self:custom.topicArn}
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:Query
+      Resource: 
+          - ${self:custom.topicArn}
+          - 'Fn::GetAtt': [ MessageDynamoDbTable, Arn ]
 
 custom:
   topicName: message-topic-channel
@@ -48,7 +58,7 @@ functions:
     events:
       - httpApi:
           method: GET
-          path: /message
+          path: /message/{target}
 
   save-message:
     handler: src/save-message.handler
@@ -66,3 +76,21 @@ resources:
       Properties:
         DisplayName: "Second stand alone topic created via CloudFormation"
         TopicName: ${self:custom.topicName}
+    
+    # This creates a new DynamoDB table
+    MessageDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: target
+            AttributeType: S
+        KeySchema:
+          - AttributeName: target
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}

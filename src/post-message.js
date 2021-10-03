@@ -13,7 +13,7 @@ exports.handler = async (event) => {
     // create message
     if (DTO.isValid(event)) {
       const msg = DTO.parse(event);
-      PublishMessage(msg);
+      await PublishMessage(msg);
       return HTTP.httpOk("Message was published with success.") // return ok 200
     } else {
       return HTTP.httpError("Invalid parameters, please use: " + DTO.example)
