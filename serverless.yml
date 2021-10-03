@@ -8,26 +8,58 @@ provider:
   runtime: nodejs14.x
   lambdaHashingVersion: 20201221
   region: eu-central-1
+  environment:
+    MESSAGE_TOPIC_NAME: ${self:custom.topicName}
+    MESSAGE_TOPIC_ARN: ${self:custom.topicArn}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sns:Publish"
+      Resource: ${self:custom.topicArn}
+
+custom:
+  topicName: message-topic-channel
+  # cloud formation intrinstic function to get ARN of topic.
+  # `MessageTopic` references the cloudformation in `resources`
+  topicArn:
+    Fn::Join:
+      - ""
+      - - "arn:aws:sns:"
+        - Ref: AWS::Region
+        - ":"
+        - Ref: AWS::AccountId
+        - ":"
+        - Fn::GetAtt:
+            - MessageTopic
+            - TopicName
 
 functions:
   post-message:
     handler: src/post-message.handler
-    environment:
-      topicARN:
-        Ref: SNSTopicMessageTopic
     events:
       - httpApi:
           method: POST
           path: /message
-  
+
   get-message:
     handler: src/get-message.handler
     events:
       - httpApi:
           method: GET
           path: /message
-  
+
   save-message:
     handler: src/save-message.handler
     events:
-      - sns: MessageTopic
+      - sns:
+          arn: !Ref MessageTopic
+          topicName: ${self:custom.topicName}
+
+resources:
+  Resources:
+    # This creates a new sns topic.
+    MessageTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: "Second stand alone topic created via CloudFormation"
+        TopicName: ${self:custom.topicName}
