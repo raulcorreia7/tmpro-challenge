@@ -36,6 +36,7 @@ custom:
 functions:
   post-message:
     handler: src/post-message.handler
+    memorySize: 128
     events:
       - httpApi:
           method: POST
@@ -43,6 +44,7 @@ functions:
 
   get-message:
     handler: src/get-message.handler
+    memorySize: 128
     events:
       - httpApi:
           method: GET
@@ -50,6 +52,7 @@ functions:
 
   save-message:
     handler: src/save-message.handler
+    memorySize: 128
     events:
       - sns:
           arn: !Ref MessageTopic
