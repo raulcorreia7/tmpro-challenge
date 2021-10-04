@@ -34,11 +34,18 @@ exports.PublishMessageDTO = function PublishMessageDTO(message, delivery, target
  * @returns True if contains all DTO Parameters, or false if it doesn't
  */
 exports.isValid = (event) => {
+    let validationObj = event;
+    
+    if(typeof event === 'string') {
+        validationObj = JSON.parse(event);
+    }
+
     for (const element of parameters) {
-        if (utils.stringIsNullOrEmpty(event[element])) {
+        if (utils.stringIsNullOrEmpty(validationObj[element])) {
             return false;
         }
     }
+
     return true;
 }
 

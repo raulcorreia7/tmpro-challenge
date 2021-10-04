@@ -11,8 +11,14 @@ exports.handler = async (event) => {
     console.log('We received an event: ' + JSON.stringify(event, null, 2))
 
     // create message
+    let msg = null;
+
     if (DTO.isValid(event)) {
-      const msg = DTO.parse(event);
+      msg = DTO.parse(event);
+    } else if (DTO.isValid(event.body)) {
+      msg = DTO.parse(event.body)
+    }
+    if (msg) {
       await PublishMessage(msg);
       return HTTP.httpOk("Message was published with success.") // return ok 200
     } else {
@@ -40,5 +46,5 @@ async function PublishMessage(message) {
   // try to publish it
   await SNS.publish(params).promise()
 
-  console.log('Published message to SNS: ', TOPIC_ARN)
+  console.log('Published message to SNS: ' + TOPIC_ARN + '\n')
 }

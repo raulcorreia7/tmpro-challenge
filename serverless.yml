@@ -80,8 +80,8 @@ functions:
           arn: !Ref MessageTopic
           topicName: ${self:custom.topicName}
           filterPolicy:
-          delivery:
-            - "email"
+            delivery:
+              - "email"
 
   # Creates a lambda that listens to SNS topics, filters delivery by SMS and sends an SMS
   # send-sms:
