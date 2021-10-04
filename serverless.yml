@@ -13,9 +13,9 @@ provider:
     MESSAGE_TOPIC_NAME: ${self:custom.topicName}
     MESSAGE_TOPIC_ARN: ${self:custom.topicArn}
     DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
-    EMAIL_ARN : arn:aws:ses:eu-central-1:061659491951:identity/testing@raulcorreia.com
-    FROM_NAME : "Raúl Correia"
-    FROM_EMAIL : "testing@raulcorreia.com"
+    EMAIL_ARN: arn:aws:ses:eu-central-1:061659491951:identity/testing@raulcorreia.com
+    FROM_NAME: "Raúl Correia"
+    FROM_EMAIL: "testing@raulcorreia.com"
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -23,9 +23,9 @@ provider:
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:Query
-      Resource: 
-          - ${self:custom.topicArn}
-          - 'Fn::GetAtt': [ MessageDynamoDbTable, Arn ]
+      Resource:
+        - ${self:custom.topicArn}
+        - "Fn::GetAtt": [MessageDynamoDbTable, Arn]
 
 custom:
   topicName: message-topic-channel
@@ -44,6 +44,7 @@ custom:
             - TopicName
 
 functions:
+  # Create A HTTP Post API to post messages
   post-message:
     handler: src/post-message.handler
     memorySize: 128
@@ -51,7 +52,8 @@ functions:
       - httpApi:
           method: POST
           path: /message
-
+  
+  # Create a HTTP Get API to get Message
   get-message:
     handler: src/get-message.handler
     memorySize: 128
@@ -59,7 +61,8 @@ functions:
       - httpApi:
           method: GET
           path: /message/{target}
-
+  
+  # Create a lambda that listens to SNS topics and saves to DynamoDB
   save-message:
     handler: src/save-message.handler
     memorySize: 128
@@ -67,6 +70,29 @@ functions:
       - sns:
           arn: !Ref MessageTopic
           topicName: ${self:custom.topicName}
+  
+  # Creates a lambda that listens to SNS topics, filters delivery by email and sends an email
+  send-email:
+    handler: src/send-email.handler
+    memorySize: 128
+    events:
+      - sns:
+          arn: !Ref MessageTopic
+          topicName: ${self:custom.topicName}
+          filterPolicy:
+          delivery: "email"
+  
+  # Creates a lambda that listens to SNS topics, filters delivery by SMS and sends an SMS
+  # send-sms:
+  #   handler: src/send-email.handler
+  #   memorySize: 128
+  #   events:
+  #     - sns:
+  #         arn: !Ref MessageTopic
+  #         topicName: ${self:custom.topicName}
+  #         filterPolicy:
+  #         delivery: "sms"
+      
 
 resources:
   Resources:
@@ -76,7 +102,7 @@ resources:
       Properties:
         DisplayName: "Second stand alone topic created via CloudFormation"
         TopicName: ${self:custom.topicName}
-    
+
     # This creates a new DynamoDB table
     MessageDynamoDbTable:
       Type: AWS::DynamoDB::Table
