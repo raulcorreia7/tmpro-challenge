@@ -52,7 +52,7 @@ functions:
       - httpApi:
           method: POST
           path: /message
-  
+
   # Create a HTTP Get API to get Message
   get-message:
     handler: src/get-message.handler
@@ -61,7 +61,7 @@ functions:
       - httpApi:
           method: GET
           path: /message/{target}
-  
+
   # Create a lambda that listens to SNS topics and saves to DynamoDB
   save-message:
     handler: src/save-message.handler
@@ -70,7 +70,7 @@ functions:
       - sns:
           arn: !Ref MessageTopic
           topicName: ${self:custom.topicName}
-  
+
   # Creates a lambda that listens to SNS topics, filters delivery by email and sends an email
   send-email:
     handler: src/send-email.handler
@@ -80,8 +80,9 @@ functions:
           arn: !Ref MessageTopic
           topicName: ${self:custom.topicName}
           filterPolicy:
-          delivery: "email"
-  
+          delivery:
+            - "email"
+
   # Creates a lambda that listens to SNS topics, filters delivery by SMS and sends an SMS
   # send-sms:
   #   handler: src/send-email.handler
@@ -92,7 +93,6 @@ functions:
   #         topicName: ${self:custom.topicName}
   #         filterPolicy:
   #         delivery: "sms"
-      
 
 resources:
   Resources:

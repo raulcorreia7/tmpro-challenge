@@ -44,7 +44,12 @@ async function GetMessagesFromTarget(target) {
   };
 
   const dbclient = new AWS.DynamoDB.DocumentClient();
-  const messages = await dbclient.query(params).promise()
+  const data = await dbclient.query(params).promise()
+  const messages = []
+
+  for (const m of data) {
+    messages.push(m.message)
+  }
 
   console.log("Fetched the messages : " + UTILS.stringify(messages))
 
