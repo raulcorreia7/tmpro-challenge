@@ -5,7 +5,7 @@ const utils = require('../lib/utils')
  * {
  *      "message" : "Lorep ipsum",
  *      "delivery" : "email" or "sms",
- *      "target" : "user@user.pt" or "123456789"
+ *      "target" : "user@user.pt" or "+31123456789"
  * }
  */
 
