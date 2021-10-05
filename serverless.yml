@@ -19,14 +19,15 @@ provider:
   iamRoleStatements:
     - Effect: "Allow"
       Action:
-        - "sns:SetSMSAttributes"
-        - "sns:Publish"
+        - "sns:*"
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:Query"
+        # SNS:SetSMSAttributes needs to be set manually due to sandbox account. 
       Resource:
         - ${self:custom.topicArn}
         - "Fn::GetAtt": [MessageDynamoDbTable, Arn]
+        - "*"
 
 custom:
   topicName: message-topic-channel
@@ -86,7 +87,7 @@ functions:
 
   # Creates a lambda that listens to SNS topics, filters delivery by SMS and sends an SMS
   send-sms:
-    handler: src/send-email.handler
+    handler: src/send-sms.handler
     memorySize: 128
     events:
       - sns:

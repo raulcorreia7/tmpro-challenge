@@ -2,6 +2,30 @@ const AWS = require('aws-sdk')
 const SES = new AWS.SES({ apiVersion: 'latest' })
 const UTILS = require('./lib/utils')
 
+
+
+
+exports.handler = async (event) => {
+
+  console.log("Email was sent : " + UTILS.stringify(event))
+
+  /**
+   * In pseudo code,
+   * Read message,
+   * Create corresponding email from 
+   * {
+   *  Subject:
+   *  To:
+   *  Body :
+   * }
+   * 
+   * sns.sendEmail(email)
+   */
+
+  return Promise.resolve();
+}
+
+
 // /**
 //  * Send an e-mail
 //  *
@@ -44,12 +68,3 @@ const UTILS = require('./lib/utils')
 //     })
 //   })
 // }
-
-
-
-modules.exports.handler = async (event) => {
-
-  console.log("Email was sent : " + UTILS.stringify(event))
-
-  return Promise.resolve();
-}

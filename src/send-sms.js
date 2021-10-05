@@ -48,5 +48,5 @@ async function sendMessage(dto) {
   }
 
   await SNS.setSMSAttributes(attributes).promise()
-  await SNS.publish(message).promise()
+  await SNS.publish(params).promise()
 }

@@ -56,7 +56,13 @@ async function publishMessage(message) {
   // params of sns publish
   const params = {
     Message: DTO.stringify(message),
-    TopicArn: TOPIC_ARN
+    TopicArn: TOPIC_ARN,
+    MessageAttributes: {
+      delivery: {
+        DataType: "String.Array",
+        StringValue: JSON.stringify(message.delivery),
+      }
+    }
   }
 
   console.log(`Sending message: ${params.Message} to SNS topic : ${TOPIC_ARN}`)
