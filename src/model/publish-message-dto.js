@@ -34,21 +34,29 @@ exports.PublishMessageDTO = function PublishMessageDTO(message, delivery, target
  * @returns True if contains all DTO Parameters, or false if it doesn't
  */
 exports.isValid = (event) => {
-    let validationObj = event;
-    
-    if(typeof event === 'string') {
-        validationObj = JSON.parse(event);
-    }
-
     for (const element of parameters) {
-        if (utils.stringIsNullOrEmpty(validationObj[element])) {
+        if (utils.stringIsNullOrEmpty(event[element])) {
             return false;
         }
     }
 
     return true;
 }
+/**
+ * Check if a given string contains all required parameters
+ * @param {*} event AWS Post event
+ * @returns True if contains all DTO Parameters, or false if it doesn't
+ */
+exports.isValidString = (event) => {
+    const obj = JSON.parse(data)
+    for (const element of parameters) {
+        if (utils.stringIsNullOrEmpty(obj[element])) {
+            return false;
+        }
+    }
 
+    return true;
+}
 /**
  * Parses all events parameters into a proper object
  * @param {*} event AWS Post event
@@ -73,5 +81,5 @@ exports.parseFromString = (data) => {
  * @returns string
  */
 exports.stringify = (dto) => utils.stringify(dto)
-exports.exampleDTO = new this.PublishMessageDTO("Lorep ipsum", "email")
+exports.exampleDTO = new this.PublishMessageDTO("Lorep ipsum", "email", "hello@world.com")
 exports.example = this.stringify(this.exampleDTO)

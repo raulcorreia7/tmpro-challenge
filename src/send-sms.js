@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
-const UUID = require('uuid');
 const AWS = require('aws-sdk')
 const DTO = require('./model/publish-message-dto')
+const SNS = new AWS.SNS({ apiVersion: '2010-03-31' })
 
 const error = (callback, message) => callback(new Error(message))
 
@@ -11,7 +11,7 @@ exports.handler = async (event, context, callback) => {
     event.Records[0] &&
     event.Records[0].EventSource === "aws:sns") {
 
-    console.log("We have a sns record to save!")
+    console.log("We have a sns record to send a SMS!")
     // get the object and parse it
     let sns_object = event.Records[0].Sns;
     let sns_message = sns_object.Message;
@@ -19,9 +19,9 @@ exports.handler = async (event, context, callback) => {
     console.log("Message received: " + sns_message);
     // check if it's valid
     if (DTO.isValid(obj_from_string)) {
-      console.log("Saving Message.")
-      await saveMessage(obj_from_string, callback)
-      console.log("Saved succesfully!");
+      console.log("Sendining SMS Message.")
+      await sendMessage(obj_from_string, callback)
+      console.log("Sent Message succesfully!");
     } else {
       error(callback, "Invalid data 😥: " + sns_message)
     }
@@ -33,21 +33,20 @@ exports.handler = async (event, context, callback) => {
 
 
 
-async function saveMessage(dto) {
-  const timestamp = new Date().getTime();
+async function sendMessage(dto) {
 
-  const params = {
+  const attributes = {
     // eslint-disable-next-line no-undef
-    TableName: process.env.DYNAMODB_TABLE,
-    Item: {
-      id: UUID.v1(),
-      message: dto.message,
-      delivery: dto.delivery,
-      target: dto.target,
-      created: timestamp,
-    },
+    attributes: {
+      DefaultSMSType: 'Promotional',
+    }
   };
 
-  const dbclient = new AWS.DynamoDB.DocumentClient();
-  return dbclient.put(params).promise()
+  const params = {
+    Message: dto.message,
+    PhoneNumber: dto.target
+  }
+
+  await SNS.setSMSAttributes(attributes).promise()
+  await SNS.publish(message).promise()
 }

@@ -15,7 +15,7 @@ exports.handler = async (event) => {
       return HTTP.httpError("The target cannot be empty.");
     }
 
-    const messages = await GetMessagesFromTarget(target);
+    const messages = await getMessagesFromTarget(target);
 
     return HTTP.httpOk(UTILS.stringify(messages)) // return ok 200
   } catch (err) {
@@ -27,7 +27,7 @@ exports.handler = async (event) => {
   }
 }
 
-async function GetMessagesFromTarget(target) {
+async function getMessagesFromTarget(target) {
 
   console.log("Fetching messages for target : " + target);
 

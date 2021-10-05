@@ -13,3 +13,12 @@ exports.stringIsNullOrEmpty = (value) => {
  * @returns string
  */
 exports.stringify = (dto) => JSON.stringify(dto, null, 2)
+
+/**
+ * Checks if a object is a string
+ * @param {*} val 
+ * @returns 
+ */
+exports.isString = (val) => {
+  return typeof val === 'string' || ((!!val && typeof val === 'object') && Object.prototype.toString.call(val) === '[object String]');
+}
