@@ -14,9 +14,10 @@ authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
 
 # Serverless Framework AWS NodeJS Example
 
-This project consists on solving TM PRO challenge with serverless framework with NodeJS. The approach consisted on by problem solving approach, adding a bit of unknown and new things learning by doing.
+This project consists on solving TM PRO challenge with serverless framework with NodeJS. 
+The approach consisted on by problem solving approach, adding a bit of unknown and new things learning by doing.
 
-First the idea was to sketch the requirements on piece of paper. Wit the architecture in mind, map it to AWS offerings and see how can it be shaped. It went initialy from a microservice to completly broken apart lambda architecture.
+First the idea was to sketch the requirements on piece of paper. After having a mind map, translate it to AWS offerings and see how can it be shaped or modified. It went initialy from a microservice to completly broken apart lambda architecture.
 
 On top of that, the biggest added value of this challenge is using this team to learn new  unknown things. So i took this time to add something new to my toolbelt. I decided to use a different approach by using something completly unknown to me [Serverless Framework](https://www.serverless.com/).
 
