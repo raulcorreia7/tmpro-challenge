@@ -12,7 +12,7 @@ authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
 -->
 
 
-# Serverless Framework AWS NodeJS Example
+# Summary
 
 This project consists on solving TM PRO challenge with serverless framework with NodeJS. 
 The approach consisted on by problem solving approach, adding a bit of unknown and new things learning by doing.
